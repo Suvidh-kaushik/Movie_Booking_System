@@ -5,6 +5,7 @@
 - Backend service 2 (mail-service) & RabbitMQ: https://movie-booking-system-1023910036097.asia-south1.run.app/
 
   Note:
+  - Please once access the mail-service by clicking the link so the instance can start the rabbitmq consumer
   - Frontend and Services might take 1-2 min to load since they are deployed in free tier 
   - mail-service instance will be closed in 1 week
 
