@@ -28,13 +28,13 @@ WORKDIR /app
 
 # Install only production deps
 COPY package*.json ./
-RUN npm ci --omit=dev
+RUN npm install --omit=dev
 
 # Copy compiled dist from builder
 COPY --from=builder /app/dist ./dist
 
 # Expose port (for observability; service is mostly a queue consumer)
-EXPOSE 3001
+EXPOSE 5001
 
 # Healthcheck (basic TCP check)
 HEALTHCHECK --interval=30s --timeout=3s --start-period=10s --retries=3 \
