@@ -22,7 +22,6 @@ export const authenticateAdmin=TryCatch(async(req:AuthenticatedRequest,res:Respo
             message:"Invalid Token"
         });
     }
-    console.log(decodedToken.userId)
     const existingAdmin = await admin.findById(decodedToken.userId);
     if(!existingAdmin){
         return res.status(404).json({

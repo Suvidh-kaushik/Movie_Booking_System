@@ -11,7 +11,8 @@ import {
   MapPin, 
   User,
   Film,
-  RefreshCw
+  RefreshCw,
+  Trash2
 } from "lucide-react";
 import axios from "axios";
 import toast from "react-hot-toast";
@@ -42,6 +43,7 @@ export default function BookingsPage() {
   const router = useRouter();
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [loadingBookings, setLoadingBookings] = useState(true);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   useEffect(() => {
     if (!isAuth && !loading) {
@@ -90,6 +92,27 @@ export default function BookingsPage() {
       minute: '2-digit',
       hour12: true
     });
+  };
+
+  const handleDelete = async (bookingId: string) => {
+    const confirmDelete = window.confirm("Are you sure you want to delete this booking?");
+    if (!confirmDelete) return;
+
+    try {
+      setDeletingId(bookingId);
+      const { data } = await axios.post(
+        `${user_service}/api/v1/booking/show/delete`,
+        { bookingId },
+        { withCredentials: true }
+      );
+      toast.success(data.message || "Booking deleted");
+      setBookings(prev => prev.filter(b => b._id !== bookingId));
+    } catch (error: any) {
+      const msg = error?.response?.data?.message || "Failed to delete booking";
+      toast.error(msg);
+    } finally {
+      setDeletingId(null);
+    }
   };
 
   if (loading || loadingBookings) {
@@ -234,6 +257,14 @@ export default function BookingsPage() {
                       </button>
                       <button className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors text-sm">
                         View Details
+                      </button>
+                      <button
+                        onClick={() => handleDelete(booking._id)}
+                        disabled={deletingId === booking._id}
+                        className={`px-4 py-2 rounded-lg transition-colors text-sm flex items-center space-x-2 ${deletingId === booking._id ? 'bg-red-900 text-red-200 cursor-not-allowed' : 'bg-red-600 hover:bg-red-700 text-white'}`}
+                      >
+                        <Trash2 size={16} />
+                        <span>{deletingId === booking._id ? 'Deleting...' : 'Delete'}</span>
                       </button>
                     </div>
                   </div>

@@ -178,3 +178,73 @@ export const listUserBookings = TryCatch(async (req: AuthenticatedRequest, res: 
 });
 
 
+
+export const deleteBooking = TryCatch(async (req: AuthenticatedRequest, res: Response) => {
+    const { bookingId } = req.body;
+    
+    if (!bookingId) {
+        return res.status(400).json({ message: "Booking ID is required" });
+    }
+    const existingBooking = await booking.findById(bookingId)
+    .populate({
+      path: 'showId',
+      select: 'showTime showDuration screenId movieId theaterId',
+      populate: [
+        { path: 'theaterId', select: 'theaterName location' },
+        { path: 'movieId', select: 'title' } // This ensures movieId is populated as a document
+      ]
+    })
+    .populate({
+      path: 'userId',
+      select: 'name email'
+    });
+   
+    if (!existingBooking) {
+        return res.status(404).json({ message: "Booking not found" });
+    }
+    const userId = req.user?._id;
+    if (existingBooking.userId._id.toString() !== userId?.toString()) {
+        return res.status(403).json({ message: "You are not authorized to delete this booking" });
+    }
+
+    const existingShow = await show.findById(existingBooking.showId);
+    if (!existingShow) {
+        return res.status(404).json({ message: "Associated show not found" });
+    }
+    
+     const bookedSeats = existingBooking.seats;
+     const availableSeats = existingShow.availableSeats;
+
+     bookedSeats.forEach((s) => {
+         const row = availableSeats[s.row];
+         if (row) row[s.col] = 0; 
+     });
+
+     existingShow.availableSeats=availableSeats;
+     await existingShow.save();
+
+     await user.updateOne(
+       { _id: userId },
+       { $pull: { bookings: bookingId } }
+     );
+
+      const movieTitle = (existingBooking.showId as any).movieId.title;
+      const showTime = (existingBooking.showId as any).showTime;
+     
+      const emailBody = `Your booking for the movie "${movieTitle}" has been confirmed.
+    Showtime: ${new Date(showTime).toLocaleString()}
+    Seats: ${bookedSeats}
+    Enjoy your movie!
+`;
+
+     await publishToQueue('send-mail', {
+      to: req.user?.email,
+      subject: 'Booking Confirmation',
+      body: emailBody
+     });
+
+     await booking.findOneAndDelete(bookingId);
+     return res.status(200).json({
+      messgae:"booking removed successfully"
+     })
+  });
