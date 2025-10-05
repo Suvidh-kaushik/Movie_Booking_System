@@ -18,7 +18,7 @@ import {
 } from "lucide-react";
 
 export default function HomePage() {
-  const { movies, fetchMovies, loading, user, logoutUser } = useAppData();
+  const { movies, fetchMovies, loading, user, logoutUser, isAuth } = useAppData();
   const router = useRouter();
 
   useEffect(() => {
@@ -34,14 +34,18 @@ export default function HomePage() {
     await logoutUser();
     router.push("/login");
   };
-
+  
+  const handleLogin = () => {
+    router.push("/login");
+  };
+  
   const getGreeting = () => {
     const hour = new Date().getHours();
     if (hour < 12) return "Good Morning";
     if (hour < 18) return "Good Afternoon";
     return "Good Evening";
   };
-
+  
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-900 flex items-center justify-center">
@@ -52,7 +56,7 @@ export default function HomePage() {
       </div>
     );
   }
-
+  
   return (
     <div className="min-h-screen bg-gray-900">
       {/* Header */}
@@ -70,20 +74,32 @@ export default function HomePage() {
             </div>
             
             <div className="flex items-center space-x-4">
-              <button
-                onClick={() => router.push("/profile")}
-                className="flex items-center space-x-2 bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded-lg transition-colors"
-              >
-                <Settings size={18} className="text-gray-300" />
-                <span className="text-gray-300 text-sm">Settings</span>
-              </button>
-              <button
-                onClick={handleLogout}
-                className="flex items-center space-x-2 bg-gray-600 hover:bg-gray-700 px-4 py-2 rounded-lg transition-colors"
-              >
-                <LogOut size={18} className="text-white" />
-                <span className="text-white text-sm">Logout</span>
-              </button>
+              {isAuth ? (
+                <>
+                  <button
+                    onClick={() => router.push("/profile")}
+                    className="flex items-center space-x-2 bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded-lg transition-colors"
+                  >
+                    <Settings size={18} className="text-gray-300" />
+                    <span className="text-gray-300 text-sm">Settings</span>
+                  </button>
+                  <button
+                    onClick={handleLogout}
+                    className="flex items-center space-x-2 bg-gray-600 hover:bg-gray-700 px-4 py-2 rounded-lg transition-colors"
+                  >
+                    <LogOut size={18} className="text-white" />
+                    <span className="text-white text-sm">Logout</span>
+                  </button>
+                </>
+              ) : (
+                <button
+                  onClick={handleLogin}
+                  className="flex items-center space-x-2 bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg transition-colors"
+                >
+                  <User size={18} className="text-white" />
+                  <span className="text-white text-sm">Login</span>
+                </button>
+              )}
             </div>
           </div>
         </div>

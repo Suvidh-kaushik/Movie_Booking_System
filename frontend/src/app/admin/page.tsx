@@ -102,6 +102,10 @@ useEffect(() => {
     router.push("/login");
   };
 
+  const handleLogin = () => {
+    router.push("/login");
+  };
+  
   const adminMenuItems = [
     {
       title: "Movies",
@@ -179,13 +183,22 @@ useEffect(() => {
                 <p className="text-white text-sm font-medium">{user?.username}</p>
                 <p className="text-gray-400 text-xs">Administrator</p>
               </div>
-              <button
-                onClick={handleLogout}
-                className="flex items-center space-x-2 bg-red-600 hover:bg-red-700 px-4 py-2 rounded-lg transition-colors"
-              >
-                <LogOut size={18} className="text-white" />
-                <span className="text-white text-sm">Logout</span>
-              </button>
+              {isAuth ? (
+                <button
+                  onClick={handleLogout}
+                  className="flex items-center space-x-2 bg-red-600 hover:bg-red-700 px-4 py-2 rounded-lg transition-colors"
+                >
+                  <LogOut size={18} className="text-white" />
+                  <span className="text-white text-sm">Logout</span>
+                </button>
+              ) : (
+                <button
+                  onClick={handleLogin}
+                  className="flex items-center space-x-2 bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg transition-colors"
+                >
+                  <span className="text-white text-sm">Login</span>
+                </button>
+              )}
             </div>
           </div>
         </div>

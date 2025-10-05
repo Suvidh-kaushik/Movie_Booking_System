@@ -1,17 +1,11 @@
 "use client";
 
 import { useAppData, user_service } from "@/context/AppContext";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { ChevronLeft, Film, Clock, MapPin } from "lucide-react";
 import axios from "axios";
 import toast from "react-hot-toast";
-
-interface MovieDetailsPageProps {
-  params: {
-    id: string;
-  };
-}
 
 interface Show {
   _id: string;
@@ -42,9 +36,10 @@ interface DateOption {
   day: string;
 }
 
-export default function MovieDetailsPage({ params }: MovieDetailsPageProps) {
+export default function MovieDetailsPage() {
   const { movies } = useAppData();
   const router = useRouter();
+  const { id } = useParams<{ id: string }>();
   const [movie, setMovie] = useState<any>(null);
   const [selectedDate, setSelectedDate] = useState<string>("");
   const [shows, setShows] = useState<Show[]>([]);
@@ -83,8 +78,8 @@ export default function MovieDetailsPage({ params }: MovieDetailsPageProps) {
   }, []);
 
   useEffect(() => {
-    if (movies) {
-      const foundMovie = movies.find((m) => m._id === params.id);
+    if (movies && id) {
+      const foundMovie = movies.find((m) => m._id === id);
       if (foundMovie) {
         setMovie(foundMovie);
       } else {
@@ -92,7 +87,7 @@ export default function MovieDetailsPage({ params }: MovieDetailsPageProps) {
         router.push("/home");
       }
     }
-  }, [movies, params.id, router]);
+  }, [movies, id, router]);
 
   // Fetch shows when date changes
   useEffect(() => {
