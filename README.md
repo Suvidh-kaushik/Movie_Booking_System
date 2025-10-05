@@ -4,8 +4,9 @@
 - Backend service 1 (user-service): https://movie-booking-system-backend-user-service.onrender.com/
 - Backend service 2 (mail-service) & RabbitMQ: https://movie-booking-system-1023910036097.asia-south1.run.app/
 
-  - Note:a)Frontend and Services might take 1-2 min to load since they are deployed in free tier 
-         b)mail-service instance will be closed in 1 week
+  Note:
+  - Frontend and Services might take 1-2 min to load since they are deployed in free tier 
+  - mail-service instance will be closed in 1 week
 
 
 ## Movie Booking System 
