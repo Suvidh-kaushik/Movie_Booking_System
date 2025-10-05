@@ -1,7 +1,7 @@
 "use client";
 
 import { useAppData, user_service } from "@/context/AppContext";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import React, { Usable, useEffect, useState } from "react";
 import { 
   ArrowLeft, 
@@ -42,17 +42,10 @@ interface Theater {
   location: string;
 }
 
-interface ScreenManagementPageProps {
-  params: {
-    screenId: string;
-  };
-}
-
-
-export default function ShowManagement({params}: ScreenManagementPageProps) {
+export default function ShowManagement() {
   const { user, isAuth, loading } = useAppData();
   const router = useRouter();
-  const { screenId } = params; 
+  const { screenId } = useParams<{ screenId: string }>();
   const [shows, setShows] = useState<Show[]>([]);
   const [movies, setMovies] = useState<Movie[]>([]);
   const [theater, setTheater] = useState<Theater | null>(null);
@@ -71,7 +64,7 @@ export default function ShowManagement({params}: ScreenManagementPageProps) {
   }, [isAuth, router, loading]);
 
   useEffect(() => {
-    if (isAuth) {
+    if (isAuth && screenId) {
       fetchData();
     }
   }, [isAuth, screenId]);
@@ -320,7 +313,7 @@ export default function ShowManagement({params}: ScreenManagementPageProps) {
             </div>
             <div>
               <h3 className="text-xl font-bold text-white">Screen Management</h3>
-              <p className="text-gray-400">Screen ID: {screenId ? screenId.slice(-8) : "Unknown"}</p>
+              <p className="text-gray-400">Screen ID: {screenId ? (screenId as string).slice(-8) : "Unknown"}</p>
               {theater && (
                 <p className="text-gray-400 text-sm">{theater.theaterName} - {theater.location}</p>
               )}

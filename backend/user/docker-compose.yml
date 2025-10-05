@@ -1,0 +1,22 @@
+version: "3.9"
+
+services:
+  user:
+    build:
+      context: .
+    image: movie-user-service:latest
+    container_name: movie-user
+    environment:
+      PORT: ${PORT:-5000}
+      MONGO_URI: ${MONGO_URI}
+      REDIS_URL: ${REDIS_URL}
+      RABBIT_MQ_HOST: ${RABBIT_MQ_HOST}
+      RABBIT_MQ_USER: ${RABBIT_MQ_USER}
+      RABBIT_MQ_PASSWORD: ${RABBIT_MQ_PASSWORD}
+      RABBIT_MQ_VHOST: ${RABBIT_MQ_VHOST:-/}
+      JWT_SECRET: ${JWT_SECRET}
+      CLOUDINARY_URL: ${CLOUDINARY_URL}
+      NODE_ENV: production
+    ports:
+      - "5000:5000"
+    restart: unless-stopped

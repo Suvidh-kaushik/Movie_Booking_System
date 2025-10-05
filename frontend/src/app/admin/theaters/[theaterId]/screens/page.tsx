@@ -2,7 +2,7 @@
 
 import { useAppData, user_service } from "@/context/AppContext";
 import { useParams, useRouter } from "next/navigation";
-import React, { Usable, useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { 
   ArrowLeft, 
   Monitor, 
@@ -29,27 +29,20 @@ interface Theater {
   contactNumber: string;
 }
 
-interface ScreenManagementPageProps {
-  params: Usable<{ theaterId: string }>;
-}
-
-export default function ScreenManagement({ params }: ScreenManagementPageProps) {
+export default function ScreenManagement() {
   const { user, isAuth, loading } = useAppData();
   const router = useRouter();
-  const { theaterId } = React.use(params); 
+  const { theaterId } = useParams<{ theaterId: string }>();
   const [screens, setScreens] = useState<Screen[]>([]);
   const [theater, setTheater] = useState<Theater | null>(null);
   const [loadingScreens, setLoadingScreens] = useState(true);
   const [showAddForm, setShowAddForm] = useState(false);
 
-
-
   useEffect(() => {
-    console.log("Auth:", isAuth, "Loading:", loading, "User:", user);
-    if (isAuth) {
+    if (isAuth && theaterId) {
       fetchScreens();
     }
-  }, [isAuth,theaterId]);
+  }, [isAuth, theaterId]);
 
   const fetchScreens = async () => {
     setLoadingScreens(true);
@@ -94,17 +87,6 @@ export default function ScreenManagement({ params }: ScreenManagementPageProps) 
   const handleManageShows = (screenId: string) => {
     router.push(`/admin/screens/${screenId}/shows`);
   };
-
-  // if (loading || loadingScreens) {
-  //   return (
-  //     <div className="min-h-screen bg-gray-900 flex items-center justify-center">
-  //       <div className="flex flex-col items-center">
-  //         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mb-4"></div>
-  //         <div className="text-white text-xl">Loading screens...</div>
-  //       </div>
-  //     </div>
-  //   );
-  // }
 
   return (
     <div className="min-h-screen bg-gray-900">

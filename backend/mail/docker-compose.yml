@@ -1,0 +1,20 @@
+version: "3.9"
+
+services:
+  mail:
+    build:
+      context: .
+    image: movie-mail-service:latest
+    container_name: movie-mail
+    environment:
+      PORT: ${PORT:-5001}
+      RABBIT_MQ_HOST: ${RABBIT_MQ_HOST}
+      RABBIT_MQ_USER: ${RABBIT_MQ_USER}
+      RABBIT_MQ_PASSWORD: ${RABBIT_MQ_PASSWORD}
+      RABBIT_MQ_VHOST: ${RABBIT_MQ_VHOST:-/}
+      NODEMAILER_USER: ${NODEMAILER_USER}
+      NODEMAILER_PASS: ${NODEMAILER_PASS}
+    ports:
+      - "5001:5001"
+    restart: unless-stopped
+    # Uses the Dockerfile HEALTHCHECK
