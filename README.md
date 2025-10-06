@@ -1,3 +1,10 @@
+**Architecture Overview**
+
+  <img width="1230" height="432" alt="Screenshot from 2025-10-06 14-28-23" src="https://github.com/user-attachments/assets/43cbd092-8943-4aec-bfe7-976ddaba3150" />
+
+
+
+
 **Live Links**
 
 - Frontend: https://movie-booking-system-frontend-service.onrender.com/home
